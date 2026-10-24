@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZYAD AHMED SITE</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --red: #d62839;
+            --red-dark: #a81d2b;
+            --red-soft: #fdecee;
+            --ink: #1f2430;
+            --muted: #6b7280;
+            --line: #ececf0;
+            --bg: #f7f7f9;
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: var(--bg);
+            color: var(--ink);
+            min-height: 100vh;
+        }
+
+        /* Header band */
+        .hero {
+            background: linear-gradient(135deg, var(--red) 0%, var(--red-dark) 100%);
+            color: #fff;
+            border-radius: 0 0 2rem 2rem;
+            box-shadow: 0 10px 30px rgba(214, 40, 57, 0.25);
+        }
+        .hero-title {
+            font-family: 'Inter', sans-serif;
+            letter-spacing: 0.12em;
+        }
+
+        /* Panels */
+        .panel {
+            background: #fff;
+            border: 1px solid var(--line);
+            border-top: 4px solid var(--red);
+            box-shadow: 0 4px 20px rgba(31, 36, 48, 0.06);
+        }
+
+        textarea {
+            background: #fafafb;
+            border: 1px solid var(--line);
+            color: var(--ink);
+        }
+        textarea::placeholder { color: #9ca3af; }
+        textarea:focus {
+            outline: none;
+            border-color: var(--red);
+            box-shadow: 0 0 0 3px rgba(214, 40, 57, 0.15);
+            background: #fff;
+        }
+        textarea::-webkit-scrollbar { width: 8px; }
+        textarea::-webkit-scrollbar-track { background: #f1f1f4; border-radius: 4px; }
+        textarea::-webkit-scrollbar-thumb { background: rgba(214, 40, 57, 0.45); border-radius: 4px; }
+        textarea::-webkit-scrollbar-thumb:hover { background: rgba(214, 40, 57, 0.8); }
+
+        /* Button */
+        .match-btn {
+            background: var(--red);
+            box-shadow: 0 8px 20px rgba(214, 40, 57, 0.35);
+        }
+        .match-btn:hover { background: var(--red-dark); }
+        .match-btn:focus-visible { outline: 3px solid rgba(214, 40, 57, 0.4); outline-offset: 3px; }
+
+        /* Table */
+        .results-table thead { background: var(--red); color: #fff; }
+        .results-table tbody tr { border-bottom: 1px solid var(--line); }
+        .results-table tbody tr:last-child { border-bottom: none; }
+
+        /* Animation */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-in { animation: fadeIn 0.5s ease-out forwards; }
+        @media (prefers-reduced-motion: reduce) {
+            .fade-in { animation: none; }
+        }
+    </style>
+</head>
+<body class="flex flex-col items-center pb-10">
+
+    <!-- Header -->
+    <header class="hero w-full text-center py-10 md:py-14 px-4 mb-10">
+        <h1 class="hero-title text-4xl md:text-6xl font-extrabold uppercase mb-3" dir="ltr">
+            ZYAD AHMED SITE
+        </h1>
+        <p class="text-white/90 text-lg md:text-xl font-semibold">نظام مطابقة بيانات الـ Team Leaders المتقدم</p>
+    </header>
+
+    <!-- Main Content -->
+    <main class="w-full max-w-7xl flex flex-col gap-8 px-4 md:px-8">
+
+        <!-- Textareas Section -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Sheet Input -->
+            <div class="panel rounded-2xl p-5 flex flex-col gap-3">
+                <label for="sheetInput" class="font-bold text-xl flex items-center gap-2" style="color: var(--red);">
+                    📊 بيانات الشيت (Sheet Data)
+                </label>
+                <textarea id="sheetInput" class="w-full h-80 rounded-xl p-4 resize-none transition-all" placeholder="الصق أسماء الليدرز من الشيت هنا... (كل اسم في سطر)"></textarea>
+            </div>
+
+            <!-- CRM Input -->
+            <div class="panel rounded-2xl p-5 flex flex-col gap-3">
+                <label for="crmInput" class="font-bold text-xl flex items-center gap-2" style="color: var(--red);">
+                    💻 بيانات الـ CRM (CRM Data)
+                </label>
+                <textarea id="crmInput" class="w-full h-80 rounded-xl p-4 resize-none transition-all" placeholder="الصق بيانات الـ CRM هنا... (سيتم البحث عن الاسم الكامل أو الاختصار)"></textarea>
+            </div>
+        </div>
+
+        <!-- Action Button -->
+        <div class="flex justify-center mt-2">
+            <button id="matchBtn" class="match-btn text-white font-bold text-2xl py-4 px-16 rounded-full transform transition hover:-translate-y-1 active:translate-y-0">
+                بدأ المطابقة 🚀
+            </button>
+        </div>
+
+        <!-- Results Section -->
+        <div id="resultsContainer" class="hidden w-full mt-4 fade-in">
+            <div class="panel rounded-3xl overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="results-table w-full text-right border-collapse">
+                        <thead>
+                            <tr>
+                                <th class="p-5 font-bold text-lg w-1/4">اسم التيم ليدر (Leader Name)</th>
+                                <th class="p-5 font-bold text-lg text-center w-1/5">العدد في الشيت</th>
+                                <th class="p-5 font-bold text-lg text-center w-1/5">العدد في الـ CRM</th>
+                                <th class="p-5 font-bold text-lg text-center">الحالة (Status)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="resultsBody">
+                            <!-- Rows will be injected here via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        // Dictionary of Team Leaders
+        const leadersDict = [
+            { name: "Osama Elshazly", fullNames: ["osama elshazly"], abbr: "o.el" },
+            { name: "Ahmed Adel", fullNames: ["ahmed adel"], abbr: "a.a" },
+            { name: "Mahmoud Aboelyazeed", fullNames: ["mahmoud aboelyazeed"], abbr: "m.ab" },
+            { name: "Kareem Hussien", fullNames: ["kareem hussien"], abbr: "k.h" },
+            { name: "Hassan Ihab", fullNames: ["hassan ihab"], abbr: "h.a" },
+            { name: "Moamen Ashraf", fullNames: ["moamen ashraf"], abbr: "m.a" },
+            { name: "Omar Raafat", fullNames: ["omar raafat"], abbr: "o.r" },
+            { name: "Ibrahim Ahmed", fullNames: ["ibrahim ahmed"], abbr: "i.a" },
+            { name: "Zyad Ibrahem", fullNames: ["zyad ibrahem"], abbr: "z.i" },
+            { name: "Ahmed Reda", fullNames: ["ahmed reda"], abbr: "a.r" },
+            { name: "Mohamed Gaber", fullNames: ["mohamed gaber"], abbr: "m.g" },
+            { name: "Ahmed Abdelkareem", fullNames: ["ahmed abdelkareem"], abbr: "a.k" },
+            { name: "Mostafa Fares", fullNames: ["mostafa fares"], abbr: "m.f" },
+            { name: "Fadi Mahmoud", fullNames: ["fadi mahmoud"], abbr: "f.ma" },
+            { name: "Mohamed Elmasry", fullNames: ["mohamed elmasry"], abbr: "m.el" }
+        ];
+
+        // Function to escape special characters for Regex (like the dot in abbreviations)
+        function escapeRegExp(string) {
+            return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        }
+
+        // Logic to count occurrences in a given text
+        function parseTextCounts(text) {
+            const counts = {};
+            // Initialize counts for all leaders
+            leadersDict.forEach(leader => counts[leader.name] = 0);
+
+            const lines = text.split('\n');
+            
+            for (let i = 0; i < lines.length; i++) {
+                const line = lines[i].toLowerCase().trim();
+                if (!line) continue;
+
+                let matched = false;
+
+                // 1. FIRST: Check for Full Name
+                for (let leader of leadersDict) {
+                    if (leader.fullNames.some(fn => line.includes(fn))) {
+                        counts[leader.name]++;
+                        matched = true;
+                        break; // Move to next line once matched
+                    }
+                }
+
+                if (matched) continue; // Move to the next line
+
+                // 2. SECOND: Check for Abbreviation using strict Regex
+                for (let leader of leadersDict) {
+                    const escapedAbbr = escapeRegExp(leader.abbr);
+                    // Regex ensures we only match the abbreviation if it's not part of an English word/another abbr
+                    // (?:^|[^a-z]) -> starts at beginning of line OR is preceded by a non-letter
+                    // (?:[^a-z]|$) -> ends at end of line OR is followed by a non-letter
+                    const regex = new RegExp(`(?:^|[^a-z])${escapedAbbr}(?:[^a-z]|$)`, 'i');
+                    
+                    if (regex.test(line)) {
+                        counts[leader.name]++;
+                        break; // Move to next line once matched
+                    }
+                }
+            }
+
+            return counts;
+        }
+
+        document.getElementById('matchBtn').addEventListener('click', () => {
+            const sheetText = document.getElementById('sheetInput').value;
+            const crmText = document.getElementById('crmInput').value;
+
+            // Get counts
+            const sheetCounts = parseTextCounts(sheetText);
+            const crmCounts = parseTextCounts(crmText);
+
+            const tbody = document.getElementById('resultsBody');
+            tbody.innerHTML = ''; // Clear previous results
+
+            let hasVisibleResults = false;
+
+            leadersDict.forEach(leader => {
+                const sCount = sheetCounts[leader.name];
+                const cCount = crmCounts[leader.name];
+
+                // If both are 0, we skip showing them to keep the UI clean
+                if (sCount === 0 && cCount === 0) return;
+
+                hasVisibleResults = true;
+                let statusHtml = '';
+                let bgClass = 'hover:bg-gray-50'; // Default hover
+
+                // Status Logic
+                if (sCount === cCount) {
+                    statusHtml = `<span class="bg-emerald-50 text-emerald-700 px-4 py-2 rounded-xl text-sm font-bold border border-emerald-200">✅ مظبوط</span>`;
+                } else if (sCount > cCount) {
+                    const diff = sCount - cCount;
+                    statusHtml = `<span class="bg-red-100 text-red-700 px-4 py-2 rounded-xl text-sm font-bold border border-red-300">❌ ناقص ${diff} رقم في CRM</span>`;
+                    bgClass = 'bg-red-50 hover:bg-red-100/70';
+                } else if (cCount > sCount) {
+                    const diff = cCount - sCount;
+                    statusHtml = `<span class="bg-amber-50 text-amber-700 px-4 py-2 rounded-xl text-sm font-bold border border-amber-300">⚠️ زائد ${diff} رقم في CRM</span>`;
+                    bgClass = 'bg-amber-50/60 hover:bg-amber-50';
+                }
+
+                const tr = document.createElement('tr');
+                tr.className = `${bgClass} transition-colors duration-200`;
+                tr.innerHTML = `
+                    <td class="p-5 font-sans font-semibold text-slate-800 text-xl tracking-wide" dir="ltr" style="text-align: left;">${leader.name}</td>
+                    <td class="p-5 text-center text-2xl font-bold ${sCount > 0 ? 'text-slate-900' : 'text-slate-300'}">${sCount}</td>
+                    <td class="p-5 text-center text-2xl font-bold ${cCount > 0 ? 'text-slate-900' : 'text-slate-300'}">${cCount}</td>
+                    <td class="p-5 text-center">${statusHtml}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            // If no data matched at all
+            if (!hasVisibleResults) {
+                tbody.innerHTML = `<tr><td colspan="4" class="p-8 text-center text-gray-500 text-lg">لا يوجد بيانات متطابقة لعرضها. تأكد من إدخال البيانات في المربعات أعلاه.</td></tr>`;
+            }
+
+            // Show and animate results section
+            const resultsSection = document.getElementById('resultsContainer');
+            resultsSection.classList.remove('hidden');
+            
+            // Re-trigger animation
+            resultsSection.style.animation = 'none';
+            resultsSection.offsetHeight; /* trigger reflow */
+            resultsSection.style.animation = null;
+
+            // Scroll down
+            setTimeout(() => {
+                resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 100);
+        });
+    </script>
+</body>
+</html>
